@@ -11,7 +11,7 @@ client = genai.Client(
     api_key=os.getenv("google_api_key")
 )
 predicates = ['cold', 'loud', 'messy', 'long']
-df = pd.read_csv('PolitenessScenario.csv')[['baseline', 'c1', 'predicate question']]
+df = pd.read_csv('PolitenessScenario.csv')[['baseline', 'c1', 'politeness question']] # change this to predicate question for the how cold? questions
 modifiers = ['slightly','kind of','quite', 'very', 'extremely']
 def create_combined_prompt(c1,baseline,predicate, question, modifier):
     # create combined prompt with the **4** scenarios in random order
@@ -26,7 +26,7 @@ def create_combined_prompt(c1,baseline,predicate, question, modifier):
 
     combined_prompt = f"""In this scenario, {question}
 
-    Please rate the following two scenarios on a scale from not {predicate} at all (0) to as {predicate} as possible (100).
+    Please rate the following four scenarios on a scale from not polite at all (0) to as polite as possible (100).
 
     Scenario 1: 
     {scenarios[0][0]}
@@ -52,7 +52,7 @@ for modifier in modifiers:
     for index, row in df.iterrows():
         baseline = row['baseline']
         c1 = row['c1']
-        question = row['predicate question']
+        question = row['politeness question']
         
         scenario_values = ["","","",""]
         for attempt in range(3):
@@ -87,4 +87,4 @@ for modifier in modifiers:
 
         # save as pandas dataframe
 df_outputs = pd.DataFrame(list_outputs, columns=['modifier', 'question', 'baseline_unmodified', 'baseline_modified', 'c1_unmodified', 'c1_modified'])
-df_outputs.to_csv('response_coldness.csv', index=False)
+df_outputs.to_csv('response_politeness.csv', index=False)
