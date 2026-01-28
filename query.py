@@ -11,79 +11,56 @@ client = genai.Client(
     api_key=os.getenv("google_api_key")
 )
 predicates = ['cold', 'loud', 'messy', 'long']
-df = pd.read_csv('PolitenessScenario.csv')[['baseline', 'c1', 'politeness question']] # change this to predicate question for the how cold? questions
+df = pd.read_csv('PolitenessScenario.csv')[['baseline', 'c1', 'predicate question']] # change this to predicate question for the how cold? questions
 modifiers = ['slightly','kind of','quite', 'very', 'extremely']
-def create_combined_prompt(c1,baseline,predicate, question, modifier):
-    # create combined prompt with the **4** scenarios in random order
-    # generate in random order, 4 combinations of modified and unmodified scenarios with c1 or baseline
-    scenarios = [
-        (baseline.replace('[modifier] ', ''), 0),
-        (baseline.replace('[modifier]', modifier), 1),
-        (c1.replace('[modifier] ', ''), 2),
-        (c1.replace('[modifier]', modifier), 3),
-    ]
-    random.shuffle(scenarios)
-
-    combined_prompt = f"""In this scenario, {question}
-
-    Please rate the following four scenarios on a scale from not polite at all (0) to as polite as possible (100).
-
-    Scenario 1: 
-    {scenarios[0][0]}
-
-    Scenario 2: 
-    {scenarios[1][0]}
-
-    Scenario 3: 
-    {scenarios[2][0]}
-
-    Scenario 4: 
-    {scenarios[3][0]}
-
-    Output your response as JSON in this exact format:
-    {{"scenario1": <number>, "scenario2": <number>, "scenario3": <number>, "scenario4": <number>}}
-
-    Output nothing but the JSON.
-    """
-    return combined_prompt,[s[1] for s in scenarios]
 
 list_outputs = []
+starting_string = "Please rate the following scenarios on a scale from not cold/loud/messy/long at all (0) to as cold/loud/messy/long as possible (100)."
+ending_string = """Output your response as list in this exact format:
+[ <answer_to_scenario1>, <answer_to_scenario2>, <answer_to_scenario3>, <answer_to_scenario4>,....... ]
+
+for example:
+[ 11, 74, 32, 6, 90, ....]
+
+Output nothing but the list."""
+rows_list = []
+
 for modifier in modifiers:
     for index, row in df.iterrows():
-        baseline = row['baseline']
-        c1 = row['c1']
-        question = row['politeness question']
-        
-        scenario_values = ["","","",""]
-        for attempt in range(3):
-            combined_prompt, scenario_indices = create_combined_prompt(c1,baseline,predicates[int(index/5)],question,modifier)
-            response = client.models.generate_content(
-                model="gemini-3-flash-preview",
-                contents=combined_prompt,
-            )
-            response_text = response.text.strip()
-            try:
-                # Remove code block markers if present
-                if response_text.startswith('```'):
-                    response_text = response_text.split('```')[1]
-                    if response_text.startswith('json'):
-                        response_text = response_text[4:]
-                
-                data = json.loads(response_text)
-                scenario_values[scenario_indices[0]] = scenario_values[scenario_indices[0]] + str(data['scenario1']) + ", "
-                scenario_values[scenario_indices[1]] = scenario_values[scenario_indices[1]] + str(data['scenario2']) + ", "
-                scenario_values[scenario_indices[2]] = scenario_values[scenario_indices[2]] + str(data['scenario3']) + ", "
-                scenario_values[scenario_indices[3]] = scenario_values[scenario_indices[3]] + str(data['scenario4']) + ", "
-            except (json.JSONDecodeError, KeyError) as e:
-                print(f"Error parsing JSON response: {response_text}")
-                print(f"Error: {e}")
-            print("queried")
-        if index==0:
-            print(f"Modifier: {modifier}")
-            print(f"Prompt: {combined_prompt}")
-            print(f"Response: {response_text}")
-            print(scenario_values)
-        list_outputs.append([modifier,question] + scenario_values)
+        rows_list.append([row["predicate question"], row["baseline"].replace('[modifier] ', '')])
+        rows_list.append([row["predicate question"], row["baseline"].replace('[modifier]', modifier)])
+        rows_list.append([row["predicate question"], row["c1"].replace('[modifier] ', '')])
+        rows_list.append([row["predicate question"], row["c1"].replace('[modifier]', modifier)])
+
+scenarios = pd.DataFrame(rows_list, columns=['question', 'scenario'])
+scenario_values =[""]*scenarios.shape[0]
+for attempt in range(3):
+    shuffled_indices = list(range(scenarios.shape[0]))
+    prompt = starting_string + "\n\n"
+    for i in range(len(shuffled_indices)):
+        prompt += f"Scenario {i+1}:\n{scenarios.iloc[shuffled_indices[i]]['scenario']}\nQuestion: {scenarios.iloc[shuffled_indices[i]]['question']}\n\n"
+    prompt += ending_string
+    response = client.models.generate_content(
+        model="gemini-3-flash-preview",
+        contents=prompt,
+    )
+
+    response_text = response.text.strip()
+    try:
+    # Find and extract just the list part
+        start = response_text.find('[')
+        end = response_text.rfind(']') + 1
+        answer = json.loads(response_text[start:end])
+        for i in range(len(scenario_values)):
+            scenario_values[shuffled_indices[i]] += str(answer[i]) + ", "
+    except (json.JSONDecodeError, KeyError) as e:
+        print(f"Error parsing JSON response: {response_text}")
+        print(f"Error: {e}")
+#     print("queried")
+list_outputs = [
+    [modifier[int(i/20)], scenarios.iloc[4*i]['question']] + scenario_values[4*i:4*i+4]
+    for i in range(len(scenario_values)//4)
+]
 
         # save as pandas dataframe
 df_outputs = pd.DataFrame(list_outputs, columns=['modifier', 'question', 'baseline_unmodified', 'baseline_modified', 'c1_unmodified', 'c1_modified'])
