@@ -89,7 +89,7 @@ CONTEXT AFTER:
 
 Answer the following question:
 - In one sentence, what is being discussed in this part of the talk page?
-- Is "{ctx['phrase']}" used for politeness/hedging? Provide a one sentence explanation, and output a number from 1 (not used for politeness at all) to 5 (clearly used for politeness).
+- Does the writer use "{ctx['phrase']}" as a way to be polite? Provide a one sentence explanation, and output a number from 1 (not used for politeness at all) to 5 (used only for the sake of politeness).
 """
         
         response = client.models.generate_content(
@@ -108,4 +108,3 @@ contexts = analyze_with_sentence_context(
     'user_talks_simple.jsonl.bz2',
     'a bit'
 )
-print(f"{[c['target_sentence'] for c in contexts]}")
