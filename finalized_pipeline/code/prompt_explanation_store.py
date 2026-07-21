@@ -85,16 +85,15 @@ jp_valence_prompt = """Classify how the modifier {modifier} is being used in the
 
 Choose ONE category that best describes the usage:
 - neg_self_mitigate: It mitigates a negative statement about the speaker (e.g., "少し疲れました" softens self-criticism)
-- neg_self_emphasize: It emphasizes a negative statement about the speaker (e.g., "すごく疲れました" emphasizes self-criticism)
-- pos_self_mitigate: It mitigates a positive statement about the speaker (e.g., "私はまあまあ運がいい方だと思います" softens what could sound like arrogance)
+- neg_self_emphasize: It emphasizes a negative statement about the speaker (e.g., "すごく遅くなりました" emphasizes self-criticism)
+- pos_self_mitigate: It mitigates a positive statement about the speaker (e.g., "私はそれなりに英語ができます" softens what could sound like arrogance)
 - pos_self_emphasize: It emphasizes a positive statement about the speaker (e.g., "私はかなり運がいいんです" emphasizes self-praise)
-- neg_other_mitigate: It mitigates a negative statement about others (e.g., "あなたは少し面倒くさいですね" softens criticism)
+- neg_other_mitigate: It mitigates a negative statement about others (e.g., "あなたの文章は少し読みにくいです" softens criticism)
 - neg_other_emphasize: It emphasizes a negative statement about others (e.g., "あなたは非常に面倒くさいですね" emphasizes criticism)
-- pos_other_mitigate: It mitigates a positive statement about others (e.g., "あなたは結構頭がいいですね" softens what could sound like excessive praise)
+- pos_other_mitigate: It mitigates a positive statement about others (e.g., "あなたはの考えはそれなりに的を射ているようですが、" dampens praise)
 - pos_other_emphasize: It emphasizes a positive statement about others (e.g., "あなたは本当に頭がいいですね" emphasizes praise)
 - imp_other_mitigate: It mitigates the imposition on others (e.g., "ちょっとしたお願いをしてもいいですか" softens the size of the favor being asked)
 - imp_other_emphasize: It emphasizes the imposition on others (e.g., "かなり大きなお願いをしてもいいですか" emphasizes the size of the burden placed on the other person)
-- sarcastic: It's sarcastic or ironic usage (e.g., "ずいぶん立派なことをおっしゃいますね" -- superficially praising, but actually implying criticism). Only choose this category when the sarcastic/ironic reading is judged to be stronger/more salient than a literal reading under any other category -- otherwise, classify by the literal category even if a sarcastic tone is faintly possible.
 - neutral: It does not convey any sentiment toward anyone or towards anything of anyone (e.g., "水が少し冷たいです" is a neutral statement about the water)
 - unclear: The usage doesn't fit clearly into any category
 
@@ -110,17 +109,16 @@ en_valence_prompt  = """Classify how the modifier {modifier} is being used in th
 {sentence}
 
 Choose ONE category that best describes the usage:
-- neg_self_mitigate: It mitigates a negative statement about the speaker (e.g., "I'm a little tired" softens self-criticism)
-- neg_self_emphasize: It emphasizes a negative statement about the speaker (e.g., "I'm really tired" emphasizes self-criticism)
-- pos_self_mitigate: It mitigates a positive statement about the speaker (e.g., "I think I'm fairly lucky" softens what could sound like arrogance)
-- pos_self_emphasize: It emphasizes a positive statement about the speaker (e.g., "I'm quite lucky" emphasizes self-praise)
+- neg_self_mitigate: It mitigates a negative statement about the speaker (e.g., "I'm a little tired" softens self-pessimism)
+- neg_self_emphasize: It emphasizes a negative statement about the speaker (e.g., "I'm really late" emphasizes self-criticism)
+- pos_self_mitigate: It mitigates a positive statement about the speaker (e.g., "I think I'm fairly good at english" softens what could sound like arrogance)
+- pos_self_emphasize: It emphasizes a positive statement about the speaker (e.g., "I'm very lucky" emphasizes self-praise)
 - neg_other_mitigate: It mitigates a negative statement about others (e.g., "You're a little annoying" softens criticism)
 - neg_other_emphasize: It emphasizes a negative statement about others (e.g., "You're extremely annoying" emphasizes criticism)
-- pos_other_mitigate: It mitigates a positive statement about others (e.g., "You're pretty smart" softens what could sound like excessive praise)
+- pos_other_mitigate: It mitigates a positive statement about others (e.g., "You're pretty smart" dampens praise)
 - pos_other_emphasize: It emphasizes a positive statement about others (e.g., "You're really smart" emphasizes praise)
 - imp_other_mitigate: It mitigates the imposition on others (e.g., "Could I ask you for a small favor?" softens the size of the favor being asked)
 - imp_other_emphasize: It emphasizes the imposition on others (e.g., "Could I ask you for quite a big favor?" emphasizes the size of the burden placed on the other person)
-- sarcastic: It's sarcastic or ironic usage (e.g., "Wow, that's a really noble thing to say" -- superficially praising, but actually implying criticism). Only choose this category when the sarcastic/ironic reading is judged to be stronger/more salient than a literal reading under any other category -- otherwise, classify by the literal category even if a sarcastic tone is faintly possible.
 - neutral: It does not convey any sentiment toward anyone or towards anything of anyone (e.g., "The water is a bit cold" is a neutral statement about the water)
 - unclear: The usage doesn't fit clearly into any category
 
