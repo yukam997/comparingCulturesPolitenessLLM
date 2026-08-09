@@ -31,6 +31,7 @@ def extract_modifier_target_ja(sentence, modifier):
                 return None
             negated = is_target_negated(doc, head.i)
             return {
+                "sentence": sentence,
                 "modifier": modifier,
                 "modifier_pos": first_token.pos_,
                 "dep_relation": first_token.dep_,
@@ -43,11 +44,14 @@ def extract_modifier_target_ja(sentence, modifier):
 
 # apply across the full dataframe
 results = []
-for modifier, sentence in jp_df[['modifier', 'sentence']].head(10).values:
+for modifier, sentence in jp_df[['modifier', 'sentence']].head(100).values:
     result = extract_modifier_target_ja(sentence, modifier)
     if result is None:
-        result = {"modifier": modifier, "modifier_pos": None, "dep_relation": None,
+        result = {"sentence":sentence,"modifier": modifier, "modifier_pos": None, "dep_relation": None,
                    "target": None, "target_pos": None, "target_lemma": None, "negated": None}
-    print(result,sentence)
     results.append(result)
 
+pd.DataFrame(results).to_csv("/Users/yuka/Documents/Academics/Stanford/Research/crossCulturalPoliteness/comparingCulturesPolitenessLLM/finalized_pipeline/data/results/jp_robust_categorizing_results.csv", index=False)
+# create csv with just modifier, negated, target, and sentence
+filtered_results = [{"modifier": r["modifier"], "negated": r["negated"], "target": r["target"], "sentence": r["sentence"]} for r in results]
+pd.DataFrame(filtered_results).to_csv("/Users/yuka/Documents/Academics/Stanford/Research/crossCulturalPoliteness/comparingCulturesPolitenessLLM/finalized_pipeline/data/results/jp_robust_categorizing_filtered_results.csv", index=False)

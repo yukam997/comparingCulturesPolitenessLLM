@@ -1,0 +1,14 @@
+# conda env create -f environment.yml
+# conda activate politeness
+#
+# Python is pinned to 3.10 — the version this project was developed on.
+# Dependencies are pip-installed from requirements.txt so there is one place
+# to edit them.
+name: politeness
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - -r requirements.txt
