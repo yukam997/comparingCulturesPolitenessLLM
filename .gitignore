@@ -1,3 +1,11 @@
 finalized_pipeline/data/results/*.jsonl
 finalized_pipeline/data/results/*.jsonl
 .DS_Store
+wiki_corpus/raw/
+behavioral_data/
+__pycache__/
+# corpus data and intermediate results stay local; only the summary is committed
+wiki_corpus/*_experiment_modifier_sentences*.csv
+wiki_corpus/attitude_results/*
+!wiki_corpus/attitude_results/jsd_bars_raw.png
+!wiki_corpus/attitude_results/robustness.csv

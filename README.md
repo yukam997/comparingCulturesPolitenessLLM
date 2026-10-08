@@ -79,6 +79,46 @@ If that prints a reply, your key is loading correctly.
 - `wiki_corpus/` — Wikipedia talk-page extraction and LLM judgements
 - `*.csv`, `*.png` — intermediate results and figures
 
+## Wiki attitude pipeline (`wiki_corpus/`)
+
+Measures how much information the choice of degree modifier carries about the
+writer's attitude in English and Japanese Wikipedia talk pages, using exactly
+the 30 English and 30 Japanese modifiers and the seven attitudes from the
+behavioral experiment (crossCulturalPolitenessOfModifiers), and the estimator
+from its `computationalPipeline/llm_jsd.py`. Both languages go through
+identical processing.
+
+Extra dependencies: `pip install spacy fugashi unidic-lite`, then
+`python -m spacy download en_core_web_sm` and
+`python -m spacy download ja_core_news_sm`. Run in order:
+
+1. `fetch_talk_pages.py --lang {en,ja}` — random article-talk and user-talk
+   pages of at least 6,000 bytes from the MediaWiki API, into
+   `wiki_corpus/raw/` (gitignored).
+2. `extract_experiment_modifiers.py` — splits pages into signed comments and
+   keeps sentences where an experiment modifier modifies an adjective (by
+   adjacency or dependency parse), masking every occurrence of the modifier.
+3. `prepare_attitude_sample.py --per-venue 3500` — removes templates and
+   duplicates, caps sentences per page, and samples equal numbers per
+   language within each venue.
+4. `add_context.py` — attaches the writer's comment and the previous comment.
+5. `label_attitudes.py` — Claude Opus labels each masked sentence with one of
+   the experiment's attitudes (prompt in `prompts/attitude_context_prompt.txt`).
+   Uses the `anthropic` SDK when `ANTHROPIC_API_KEY` is set, otherwise
+   headless `claude -p`; safe to interrupt and resume.
+6. `plot_jsd_effect.py` — main numbers and figure
+   (`attitude_results/jsd_bars_raw.png`), experiment vs corpus.
+7. `robustness_checks.py` — the comparison by venue, given negation,
+   predicative uses only, confident labels only, and alternative response
+   vocabularies for the experiment (`attitude_results/robustness.csv`).
+8. `compare_human_wiki.py` (data loaders; per-attitude distribution panels)
+   and `compare_attitude_profiles.py` (whether modifiers lean toward the same
+   attitudes in the experiment and the corpus).
+
+Steps 6–8 also need the behavioral trial exports, which contain participant
+responses and are not committed: put `EN_trials.csv` and `JP_trials.csv` in
+`behavioral_data/`.
+
 ## Notes
 
 - ConvoKit downloads corpora to `~/.convokit/saved-corpora` on first use.

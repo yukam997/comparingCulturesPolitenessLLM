@@ -1,0 +1,37 @@
+You are helping with a cross-cultural study of politeness. In a behavioral experiment, English and Japanese speakers read short scenarios and filled in a blank degree word in something the main character says to another person ("It was ___ funny"). Each scenario put the speaker in one of seven attitudes toward that listener. We now want to see how those same attitudes show up in real conversation, so we are labeling sentences from Wikipedia talk pages, where editors discuss articles and each other's edits.
+
+Each item below shows one editor's comment with a target sentence marked <target>...</target>. In the target sentence, a degree word (a word saying how much, which could be an intensifier or a softener) has been replaced with {mask} wherever it occurs. When available, the previous comment in the discussion and the discussion's section heading are shown too. Use all of this to understand the situation, then label the attitude the writer expresses in the target sentence toward the person or people they are addressing.
+
+We will later relate the masked word to your label, so judge from everything except that word: don't try to guess what was removed, and don't treat the blank itself as a sign of hedging or emphasis.
+
+The seven attitudes, each with the experiment scenario it comes from:
+
+warning: The writer points out a problem or risk in order to help the addressee, usually tentatively and often with a suggested fix. (Scenario: a colleague shows you their plan; wanting to be helpful, you hesitantly point out that one part doesn't look ___ good and suggest changing it.)
+
+non-committal: The writer gives an assessment while deliberately avoiding committing to it: "might", "seems", "I'm not sure", or a counterpoint that balances it out, often when asked for a view. (Scenario: asked where to eat, not wanting to push your opinion: "the food there might not be ___ good, but it's cheap.")
+
+acknowledging: The writer concedes that the addressee was right about something, often something the writer had doubted, typically while thanking them for it. (Scenario: you doubted a friend's recommendation, it turned out just as they said, and you thank them: "that was ___ funny, thanks for inviting me.") General thanks or praise that doesn't concede a point, such as a barnstar or "thanks for your edits," is not acknowledging; label it by what the sentence is doing, which is often a plain favorable report (neutral-positive).
+
+encouraging: The writer reassures an addressee who is worried, apologetic, or has made a mistake, downplaying the problem. (Scenario: a friend apologizes that the dish came out bland, and you reassure them: "it tastes ___ good, a bit of salt and it's perfect.")
+
+annoyed: The writer expresses irritation, complaint, or blame about someone's behavior, often behavior that keeps happening, often with a demand to stop or fix it. (Scenario: a flatmate keeps leaving the shared room a mess despite reminders: "this room is ___ dirty, when are you going to clean it?")
+
+neutral-positive: A plain report of how things are, with no social agenda toward the addressee, where the state reported is good or favorable. (Scenario: someone asks how the film was and you answer "it was ___ funny"; someone asks about the bus and you answer "it wasn't ___ delayed.")
+
+neutral-negative: The same kind of plain report, where the state reported is bad or unfavorable. (Scenario: "it wasn't ___ funny"; "the bus was ___ delayed.")
+
+other: The target is not the writer's own message to someone: quoted article text, a template or boilerplate notice, a heading, or a fragment. Also use it for purely logistical questions or requests with no evaluative content, and when the writer's stance can't be determined.
+
+Notes on the harder distinctions:
+- Positive versus negative in the neutral labels is about whether the reported state is favorable, not about whether the sentence contains "not": "it isn't ___ difficult" is neutral-positive and "it's ___ outdated" is neutral-negative.
+- An evaluation is not a social stance by itself. A plain negative assessment is neutral-negative unless it carries irritation (annoyed), a helpful heads-up to the addressee (warning), or deliberate hedging (non-committal).
+- Talk pages are full of arguments, and disagreeing is not annoyed by itself. Use annoyed when the disagreement carries irritation, exasperation, blame, or sarcasm: repeating oneself ("as I already said"), pointed rhetorical questions, accusing someone of not reading or of bad faith. A calm statement that a claim or proposal is wrong or unimportant is neutral-negative (or non-committal if the writer hedges it).
+- Agreeing that the addressee's point is right counts as acknowledging.
+- Label what the target sentence is doing in context rather than the average tone of the whole comment, but use the context: a sentence that reads like a neutral report on its own may be a complaint given what it replies to.
+- Japanese sentences follow the same definitions.
+
+For each item output exactly one line:
+id<TAB>label<TAB>confidence
+where label is one of the eight labels above, spelled exactly as given, and confidence is 1 (a guess), 2 (reasonably sure), or 3 (clear). Output nothing else.
+
+Items:
